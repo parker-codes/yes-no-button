@@ -1,32 +1,30 @@
 import "./style.css";
 
-let currentSound: HTMLAudioElement | null = null;
+const yesSound = new Audio("sounds/yes.mp3");
+const noSound = new Audio("sounds/no.mp3");
 
 type Action = "yes" | "no";
 
 function playSound(action: Action): void {
-  if (currentSound) {
-    currentSound.pause();
-  }
-  currentSound = new Audio();
-
   if (action === "yes") {
-    currentSound.src = "sounds/yes.mp3";
+    restartAudio(yesSound);
   } else if (action === "no") {
-    currentSound.src = "sounds/no.mp3";
+    restartAudio(noSound);
   }
+}
 
-  currentSound.play();
+function restartAudio(audio: HTMLAudioElement): void {
+  if (audio.paused) {
+    audio.play();
+  } else {
+    audio.currentTime = 0;
+  }
 }
 
 const yesButton = document.querySelector(".button.yes")!;
-yesButton.addEventListener("mousedown", () => playSound("yes"));
-yesButton.addEventListener("keydown", (e: Event) => {
-  if ((<KeyboardEvent>e).code === "Space") playSound("yes");
-});
+yesButton.addEventListener("click", () => playSound("yes"));
+yesButton.addEventListener("touchstart", () => playSound("yes"));
 
 const noButton = document.querySelector(".button.no")!;
-noButton.addEventListener("mousedown", () => playSound("no"));
-noButton.addEventListener("keydown", (e: Event) => {
-  if ((<KeyboardEvent>e).code === "Space") playSound("no");
-});
+noButton.addEventListener("click", () => playSound("no"));
+noButton.addEventListener("touchstart", () => playSound("no"));
